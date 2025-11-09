@@ -3,16 +3,8 @@ package school.sorokin.javacore.streams;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InitiationHelper {
-
-    private static final String NEW = "NEW";
-    private static final String FORMING = "FORMING";
-    private static final String FORMED = "FORMED";
-    private static final String READY_FOR_DELIVERY = "READY FOR DELIVERY";
-    private static final String DELIVERY = "DELIVERY";
-    private static final String DELIVERED = "DELIVERED";
 
     private static final int NUMBER_OF_STATUSES = 6;
     private static final int NUMBER_OF_PRODUCTS = 18;
@@ -34,44 +26,52 @@ public class InitiationHelper {
         products.add(new Product(10L, "Banana", "Fruit", BigDecimal.valueOf(203)));
         products.add(new Product(11L, "Grape", "Fruit", BigDecimal.valueOf(215)));
         products.add(new Product(12L, "Lord of the Rings", "Book", BigDecimal.valueOf(560)));
-        products.add(new Product(13L, "Idiot", "Book", BigDecimal.valueOf(350)));
+        products.add(new Product(13L, "Idiot", "Book", BigDecimal.valueOf(99)));
         products.add(new Product(14L, "Harry Potter", "Book", BigDecimal.valueOf(420)));
         products.add(new Product(15L, "Pyramid", "Children's products", BigDecimal.valueOf(420)));
         products.add(new Product(16L, "Napkin", "Children's products", BigDecimal.valueOf(705)));
         products.add(new Product(17L, "Little cap", "Children's products", BigDecimal.valueOf(1560)));
         products.add(new Product(18L, "Diapers", "Children's products", BigDecimal.valueOf(420)));
 
+        System.out.println("Инициализированы продукты: ");
+        products.forEach(System.out::println);
         return products;
     }
 
     public static List<Order> initOrders(List<Product> allProducts) {
-        List<String> allStatuses = List.of(NEW, FORMING, FORMED, READY_FOR_DELIVERY, DELIVERY, DELIVERED);
         List<Order> allOrders = new ArrayList<>();
 
         for (int i = 0; i < NUMBER_OF_ORDERS; i++) {
-            LocalDate orderDate = LocalDate.of(2025, 9, random.nextInt(30)+1);
-            LocalDate deliveryDate = orderDate.plusDays(random.nextInt(32));
-            String status = allStatuses.get(random.nextInt(NUMBER_OF_STATUSES ));
+            LocalDate orderDate = LocalDate.of(2021, 3, random.nextInt(15) + 1);
+            LocalDate deliveryDate = orderDate.plusDays(random.nextInt(14));
+            String status = Status.values()[random.nextInt(NUMBER_OF_STATUSES)].name();
             allOrders.add(new Order((long) i, orderDate, deliveryDate, status, getProducts(allProducts)));
-
         }
+
+        System.out.println("Инициализированы заказы: ");
+        allOrders.forEach(System.out::println);
+
         return allOrders;
     }
 
     public static List<Customer> initCustomers(List<Order> allOrders) {
         List<Customer> customers = new ArrayList<>();
-        customers.add(new Customer(1L, "Kate", 3L, allOrders.stream().limit(5).collect(Collectors.toSet())));
-        customers.add(new Customer(2L, "John", 1L, Set.of(allOrders.get(5), allOrders.get(6), allOrders.get(7), allOrders.get(8), allOrders.get(9))));
-        customers.add(new Customer(3L, "Nick", 2L, Set.of(allOrders.get(10), allOrders.get(11), allOrders.get(12), allOrders.get(13), allOrders.get(14))));
-        customers.add(new Customer(4L, "Lisa", 1L, Set.of(allOrders.get(15), allOrders.get(16), allOrders.get(17), allOrders.get(18), allOrders.get(19))));
-        customers.add(new Customer(5L, "Margo", 4L, Set.of(allOrders.get(20), allOrders.get(21), allOrders.get(22), allOrders.get(23), allOrders.get(24))));
+        customers.add(new Customer(1L, "Kate", 3L, new HashSet<>(allOrders.subList(0, 4))));
+        customers.add(new Customer(2L, "John", 1L, new HashSet<>(allOrders.subList(5, 9))));
+        customers.add(new Customer(3L, "Nick", 2L, new HashSet<>(allOrders.subList(10, 14))));
+        customers.add(new Customer(4L, "Lisa", 1L, new HashSet<>(allOrders.subList(15, 19))));
+        customers.add(new Customer(5L, "Margo", 4L, new HashSet<>(allOrders.subList(20, 24))));
+
+        System.out.println("Инициализированы покупатели: ");
+        customers.forEach(System.out::println);
+
         return customers;
     }
 
     private static Set<Product> getProducts(List<Product> allProducts) {
         Set<Product> products = new HashSet<>();
-        for (int i = 0; i < random.nextInt(NUMBER_OF_PRODUCTS + 1) - 1; i++) {
-            products.add(allProducts.get(i));
+        for (int i = 0; i < random.nextInt(1, NUMBER_OF_PRODUCTS); i++) {
+            products.add(allProducts.get(random.nextInt(NUMBER_OF_PRODUCTS)));
         }
         return products;
     }

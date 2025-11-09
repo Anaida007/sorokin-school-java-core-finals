@@ -1,5 +1,6 @@
 package school.sorokin.javacore.streams;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class Customer {
@@ -15,6 +16,29 @@ public class Customer {
         this.level = level;
         this.orders = orders;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(id, customer.id)
+                && Objects.equals(name, customer.name)
+                && Objects.equals(level, customer.level)
+                && orders.containsAll(customer.orders)
+                && customer.orders.containsAll(orders);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, level, orders);
+    }
+
+    @Override
+    public String toString() {
+        return "Покупатель " + id + ", " + name + ", уровень лояльности " + level;
+    }
+
     public Long getId() {
         return id;
     }
